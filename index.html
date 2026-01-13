@@ -8,20 +8,38 @@
     <meta http-equiv="Expires" content="0" />
     <title>Social Casino</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script type="module" crossorigin src="./assets/index-Dno4vlwY.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DIXJy_kS.css">
+    <script type="module" crossorigin src="/slat2casino/assets/index-DqyhSkWd.js"></script>
+    <link rel="stylesheet" crossorigin href="/slat2casino/assets/index-BhbtEKAH.css">
   </head>
   <body class="bg-slate-950 text-white overflow-hidden overscroll-none">
     <div id="root"></div>
-    <div id="loader" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:sans-serif; color:#444;">
-      Loading Kazik...
+    <div id="loader" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:sans-serif; color:white; font-size: 14px; text-align: center;">
+      <div style="font-size: 24px; margin-bottom: 10px;">🎲</div>
+      Loading Slat2Casino...
     </div>
+    <div id="global-error" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); color:red; padding:20px; z-index:99999; overflow:auto; font-family:monospace;"></div>
+    
     <script>
+      // Capture resource loading errors (scripts, styles)
+      window.addEventListener('error', (e) => {
+        const errDiv = document.getElementById('global-error');
+        errDiv.style.display = 'block';
+        if (e instanceof ErrorEvent) {
+          errDiv.innerHTML += `<div>[JS Error] ${e.message} at ${e.filename}:${e.lineno}</div>`;
+        } else {
+          // Resource error (script 404 etc)
+          const target = e.target;
+          const url = target.src || target.href;
+          errDiv.innerHTML += `<div>[Resource Error] Failed to load: ${url}</div>`;
+        }
+      }, true);
+
       // Remove loader after React starts
       window.addEventListener('DOMContentLoaded', () => {
         const check = setInterval(() => {
           if (document.querySelector('#root > div')) {
-            document.getElementById('loader').style.display = 'none';
+            const loader = document.getElementById('loader');
+            if (loader) loader.style.display = 'none';
             clearInterval(check);
           }
         }, 100);
