@@ -36,16 +36,30 @@
         }
       }, true);
 
-      // Remove loader after React starts
-      window.addEventListener('DOMContentLoaded', () => {
-        const check = setInterval(() => {
-          if (document.querySelector('#root > div')) {
-            const loader = document.getElementById('loader');
-            if (loader) loader.style.display = 'none';
-            clearInterval(check);
-          }
-        }, 100);
-      });
+      // Remove loader when React APP is ready (aggressive check)
+      const removeLoader = () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+           loader.style.transition = 'opacity 0.5s';
+           loader.style.opacity = '0';
+           setTimeout(() => loader.style.display = 'none', 500);
+        }
+      };
+
+      const intervalId = setInterval(() => {
+        const root = document.getElementById('root');
+        // Check if root has ANY content (React injected something)
+        if (root && root.childNodes.length > 0) {
+          clearInterval(intervalId);
+          removeLoader();
+        }
+      }, 100);
+
+      // Failsafe: Force remove loader after 3 seconds no matter what
+      setTimeout(() => {
+        clearInterval(intervalId);
+        removeLoader();
+      }, 3000);
     </script>
   </body>
 </html>
