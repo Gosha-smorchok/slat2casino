@@ -4,12 +4,33 @@ import { useUserStore } from '@/store/userStore';
 import { Home, Coins, UserCircle2, ArrowLeft } from 'lucide-react';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
+import AdminPanel from '@/components/AdminPanel';
 
 const Layout = () => {
   const { balance, claimDailyBonus } = useUserStore();
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
+  
+  // Admin Logic
+  const [showAdmin, setShowAdmin] = React.useState(false);
+  const [isAdminUser, setIsAdminUser] = React.useState(false);
+
+  React.useEffect(() => {
+      // Check Telegram User
+      const tg = (window as any).Telegram?.WebApp;
+      if (tg) {
+          tg.ready();
+          const user = tg.initDataUnsafe?.user;
+          // Check for username 'DedGrishaka'
+          if (user?.username === 'DedGrishaka') {
+              setIsAdminUser(true);
+          }
+      }
+      
+      // Fallback for local dev testing (Optional: Remove in prod if strict)
+      // setIsAdminUser(true); 
+  }, []);
   
   const handleLogoClick = () => {
       navigate('/');
@@ -50,7 +71,19 @@ const Layout = () => {
             <Coins className="w-4 h-4 text-warning animate-pulse" />
             <span className="font-mono font-bold text-warning select-none">{balance.toLocaleString()}</span>
           </div>
+
+          {/* Admin Button for DedGrishaka */}
+          {isAdminUser && (
+              <button 
+                onClick={() => setShowAdmin(true)}
+                className="ml-2 bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider hover:bg-red-500/40"
+              >
+                  Admin
+              </button>
+          )}
         </header>
+
+        {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
 
         {/* Main Content Area */}
         {/* Added pt-16 to account for absolute header */}
