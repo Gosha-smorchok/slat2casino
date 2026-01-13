@@ -9,7 +9,7 @@ export interface Game {
   description: string;
   path: string;
   image: string; // Emoji for now
-  category: 'luck' | 'skill';
+  category: 'luck' | 'skill' | 'farming' | 'crash' | 'plinko';
   color: string;
 }
 

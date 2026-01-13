@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useUserStore } from '@/store/userStore';
-import { motion } from 'framer-motion';
-import { Bomb, Diamond, Ban, Coins } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bomb, Diamond } from 'lucide-react';
 import clsx from 'clsx';
 
 const GRID_SIZE = 25; // 5x5
@@ -27,8 +27,6 @@ const Mines = () => {
     const [bet, setBet] = useState(10);
     const [minesCount, setMinesCount] = useState(3);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [gameOver, setGameOver] = useState(false);
-    const [win, setWin] = useState(false);
     
     // Grid State
     // 0: Hidden, 1: Gem Revealed, 2: Mine Exploded, 3: Mine Revealed (after loss)
@@ -41,7 +39,6 @@ const Mines = () => {
     const currentMultiplier = revealedCount === 0 ? 1.0 : 
         Array.from({length: revealedCount}).reduce((acc: number, _, i) => acc * getMultiplier(minesCount, i), 1.0);
         
-    const nextMultiplier = getMultiplier(minesCount, revealedCount);
     const currentWin = Math.floor(bet * currentMultiplier);
 
     const startGame = () => {
@@ -51,8 +48,6 @@ const Mines = () => {
         }
         removeCoins(bet);
         setGridState(Array(GRID_SIZE).fill(0));
-        setGameOver(false);
-        setWin(false);
         setIsPlaying(true);
         
         // Plant mines
@@ -70,7 +65,6 @@ const Mines = () => {
 
     const cashOut = () => {
         setIsPlaying(false);
-        setWin(true);
         addCoins(currentWin);
         // Reveal mines gently
         revealAllMines(false);
@@ -84,7 +78,6 @@ const Mines = () => {
             const newGrid = [...gridState];
             newGrid[index] = 2; // Exploded
             setGridState(newGrid);
-            setGameOver(true);
             setIsPlaying(false);
             revealAllMines(true);
         } else {
@@ -109,7 +102,7 @@ const Mines = () => {
     };
 
     return (
-        <div className="flex flex-col h-full max-w-md mx-auto p-4 gap-6">
+        <div className="flex flex-col h-full gap-6">
             {/* Header / Stats */}
             <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl">
                  <div>
@@ -211,8 +204,5 @@ const Mines = () => {
         </div>
     );
 };
-
-// Helper for animations
-const AnimatePresence = ({children}: {children: React.ReactNode}) => <>{children}</>;
 
 export default Mines;

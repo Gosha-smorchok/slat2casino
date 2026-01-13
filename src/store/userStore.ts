@@ -10,6 +10,7 @@ interface UserStore {
   removeCoins: (amount: number) => boolean;
   claimDailyBonus: () => { success: boolean, message: string };
   resetBalance: () => void; // For testing/rescue
+  setBalance: (amount: number) => void;
 }
 
 const INITIAL_BALANCE = 1000;
@@ -56,6 +57,7 @@ export const useUserStore = create<UserStore>()(
         return { success: false, message: `Wait ${remaining} mins` };
       },
 
+      setBalance: (amount) => set({ balance: amount }),
       resetBalance: () => set({ balance: 100 }), // Rescue button logic essentially
     }),
     {

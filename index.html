@@ -3,11 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Social Casino</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
   </head>
-  <body class="bg-slate-950 text-white overflow-hidden overscroll-none">
+  <body style="background-color: #020617; color: white;" class="bg-slate-950 text-white overflow-hidden overscroll-none">
     <div id="root"></div>
+    <div id="loader" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:sans-serif; color:white; font-size: 14px; text-align: center;">
+      <div style="font-size: 24px; margin-bottom: 10px;">🎲</div>
+      Loading Slat2Casino...
+    </div>
+    <div id="global-error" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); color:red; padding:20px; z-index:99999; overflow:auto; font-family:monospace;"></div>
+    
+    <script>
+      // Capture resource loading errors (scripts, styles)
+      window.addEventListener('error', (e) => {
+        const errDiv = document.getElementById('global-error');
+        errDiv.style.display = 'block';
+        if (e instanceof ErrorEvent) {
+          errDiv.innerHTML += `<div>[JS Error] ${e.message} at ${e.filename}:${e.lineno}</div>`;
+        } else {
+          // Resource error (script 404 etc)
+          const target = e.target;
+          const url = target.src || target.href;
+          errDiv.innerHTML += `<div>[Resource Error] Failed to load: ${url}</div>`;
+        }
+      }, true);
+
+      // Remove loader when React APP is ready (aggressive check)
+      const removeLoader = () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+           loader.style.transition = 'opacity 0.5s';
+           loader.style.opacity = '0';
+           setTimeout(() => loader.style.display = 'none', 500);
+        }
+      };
+
+      const intervalId = setInterval(() => {
+        const root = document.getElementById('root');
+        // Check if root has ANY content (React injected something)
+        if (root && root.childNodes.length > 0) {
+          clearInterval(intervalId);
+          removeLoader();
+        }
+      }, 100);
+
+      // Failsafe: Force remove loader after 3 seconds no matter what
+      setTimeout(() => {
+        clearInterval(intervalId);
+        removeLoader();
+      }, 3000);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

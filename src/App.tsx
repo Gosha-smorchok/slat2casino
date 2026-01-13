@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import Home from '@/pages/Home';
 import Roulette from '@/pages/Roulette';
 import KeepieUppie from '@/pages/KeepieUppie';
 import Mines from '@/pages/Mines';
+import Lumberjack from '@/pages/Lumberjack';
+import Dungeon from '@/pages/Dungeon';
+import Crash from '@/pages/Crash';
+import Plinko from '@/pages/Plinko';
 import { useUserStore } from '@/store/userStore';
 
 function App() {
@@ -27,9 +31,15 @@ function App() {
         <Route path="roulette" element={<Roulette />} />
         <Route path="keepie-uppie" element={<KeepieUppie />} />
         <Route path="mines" element={<Mines />} />
+        <Route path="lumberjack" element={<Lumberjack />} />
+        <Route path="dungeon" element={<Dungeon />} />
+        <Route path="crash" element={<Crash />} />
+        <Route path="plinko" element={<Plinko />} />
+        <Route path="*" element={<Home />} />
       </Route>
     </Routes>
   );
 }
+
 
 export default App;
